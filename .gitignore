@@ -1,3 +1,10 @@
+baseline
+datasets
+analysis
+*_test_submissions
+candidate_score
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -135,7 +142,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .envrc
 .venv
 env/
