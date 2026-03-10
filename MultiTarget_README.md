@@ -45,5 +45,22 @@ cd SoFT
 conda activate soft
 
 mt_pipeline/llm/extract_mt_candidates_by_queries.py --dataset fiq
+mt_pipeline/llm/extract_mt_candidates_by_tg_img.py --dataset fiq
+
 mt_pipeline/llm/extract_mt_candidates_by_queries.py --dataset cirr
+mt_pipeline/llm/extract_mt_candidates_by_tg_img.py --dataset cirr
+```
+
+Step 2 — Select Multi-Target by Threshold
+
+```bash
+mt_pipeline/llm/select_mt_by_threshold.py --dataset fiq --threshold 0.85
+mt_pipeline/llm/select_mt_by_threshold.py --dataset cirr --threshold 0.85
+```
+
+(Optional) Step 3 - Construct New Single-Target Dataset
+
+```bash
+mt_pipeline/llm/make_single_target.py --dataset fiq
+mt_pipeline/llm/make_single_target.py --dataset cirr
 ```

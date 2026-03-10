@@ -148,6 +148,8 @@ class SelectionSingleTarget:
 
             if len(comparison_content) > 1:
                 messages.append({"role": "user", "content": comparison_content})
+            else:
+                raise ValueError("No valid comparison images available for the prompt.")
 
         text_prompt = GEN_SINGLE_TARGET_CAP.format(
             {
