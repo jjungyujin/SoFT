@@ -71,7 +71,7 @@ cd baseline
 git clone https://github.com/ExplainableML/Vision_by_Language.git
 ```
 
-Load and apply the SoFT module as shown below. The complete code is available in [the file](https://github.com/jjungyujin/SoFT/tree/main/baseline/cirevl/main_with_soft.py).
+Load and apply the SoFT module as shown below. The complete code is available in [the file](https://github.com/jjungyujin/SoFT/tree/main/baseline/cirevl_with_soft.py).
 ```python
 import sys
 from pathlib import Path
