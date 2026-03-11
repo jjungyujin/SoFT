@@ -5,6 +5,9 @@ import tqdm
 import json
 from dotenv import load_dotenv
 
+import torch
+import torch.nn.functional as F
+
 BASE_DIR = os.path.dirname(__file__)
 sys.path.append(BASE_DIR)
 
@@ -110,3 +113,41 @@ def get_dual_constraints(
             break
 
     return all_queries
+
+
+def compute_similarity_scores(index_features, device, clip_model, text_list, tokenizer):
+    if len(text_list) > 0:
+        if isinstance(text_list, str):
+            text_list = [text_list]
+        tokenized_input_captions = tokenizer(text_list).to(device)
+        text_features = clip_model.encode_text(tokenized_input_captions)
+        pred_features = F.normalize(text_features)
+        return pred_features @ index_features.T
+    else:
+        return torch.zeros(index_features.shape[0])
+
+
+def get_constraint_scores(all_queries, index_features, device, clip_model, tokenizer):
+    constraint_scores = {"reward": [], "penalty": []}
+    if index_features.device.type == "cpu":
+        index_features = index_features.cuda()
+
+    for query_dict in tqdm.tqdm(all_queries, "calculating soft scores for all queries"):
+        for key, value in query_dict.items():
+            score = compute_similarity_scores(
+                index_features, device, clip_model, value, tokenizer
+            )
+            if score.ndim > 1:
+                score = score.mean(dim=0)
+
+            if "prescriptive" in key:
+                constraint_scores["reward"].append(score.to("cpu"))
+            elif "proscriptive" in key:
+                constraint_scores["penalty"].append(score.to("cpu"))
+            else:
+                raise ValueError("unvalid query key")
+
+    for key, value in constraint_scores.items():
+        constraint_scores[key] = torch.stack(value, dim=0).cuda()
+
+    return constraint_scores
